@@ -14,10 +14,6 @@ npm install
 npm start
 ```
 
-
-
-
-
 Happy hacking!
 
 The Apollo team :)
