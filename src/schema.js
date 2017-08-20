@@ -1,79 +1,62 @@
-// This example demonstrates a simple server with some
-// relational data: Posts and Authors. You can get the
-// posts for a particular author, and vice-versa
+// This example demonstrates a simple server with some relational data: Posts and Authors. You can get the posts for a particular author,
+// and vice-versa Read the complete docs for graphql-tools here: http://dev.apollodata.com/tools/graphql-tools/generate-schema.html
 
-// Read the complete docs for graphql-tools here:
-// http://dev.apollodata.com/tools/graphql-tools/generate-schema.html
+import {
+    makeExecutableSchema,
+    addMockFunctionsToSchema
+} from 'graphql-tools';
+import {
+    merge
+} from 'lodash';
+import mocks from './mocks';
 
-import { find, filter } from 'lodash';
-import { makeExecutableSchema } from 'graphql-tools';
+import {
+    schema as protoSchema,
+    resolvers as protoResolvers
+} from './proto';
 
-const typeDefs = `
-  type Author {
-    id: Int!
-    firstName: String
-    lastName: String
-    posts: [Post] # the list of Posts by this author
-  }
+import {
+    schema as domain1Schema,
+    resolvers as domain1Resolvers
+} from './domain1';
 
-  type Post {
-    id: Int!
-    title: String
-    author: Author
-    votes: Int
-  }
+/*
+import { schema as phpSchema, resolvers as phpResolvers } from './php/schema';
+import { schema as sqlSchema, resolvers as sqlResolvers } from './sql/schema';
+*/
 
-  # the schema allows the following query:
-  type Query {
-    posts: [Post]
-    author(id: Int!): Author
-  }
+const baseSchema = [
+    `
+    type Query {
+        domain: String
+    }
+    type Mutation {
+        domain: String
+    }
+    schema {
+        query: Query,
+        mutation: Mutation
+    }`
+]
 
-  # this schema allows the following mutation:
-  type Mutation {
-    upvotePost (
-      postId: Int!
-    ): Post
-  }
-`;
+// Put schema together into one array of schema strings and one map of resolvers, like makeExecutableSchema expects
+const schema = [...baseSchema, ...protoSchema, ...domain1Schema /*, ...sqlSchema, ...phpSchema*/ ]
 
-const resolvers = {
-  Query: {
-    posts: () => posts,
-    author: (_, { id }) => find(authors, { id: id }),
-  },
-  Mutation: {
-    upvotePost: (_, { postId }) => {
-      const post = find(posts, { id: postId });
-      if (!post) {
-        throw new Error(`Couldn't find post with id ${postId}`);
-      }
-      post.votes += 1;
-      return post;
-    },
-  },
-  Author: {
-    posts: (author) => filter(posts, { authorId: author.id }),
-  },
-  Post: {
-    author: (post) => find(authors, { id: post.authorId }),
-  },
-};
+const options = {
+    typeDefs: schema,
+    resolvers: merge(protoResolvers, domain1Resolvers /*, phpResolvers, sqlResolvers*/ )
+}
 
-export const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-});
+const executableSchema = makeExecutableSchema(options);
 
-const authors = [
-  { id: 1, firstName: 'Tom', lastName: 'Coleman' },
-  { id: 2, firstName: 'Sashko', lastName: 'Stubailo' },
-  { id: 3, firstName: 'Mikhail', lastName: 'Novikov' },
-];
+const mockarooni = process.env.MOCK
 
-const posts = [
-  { id: 1, authorId: 1, title: 'Introduction to GraphQL', votes: 2 },
-  { id: 2, authorId: 2, title: 'Welcome to Meteor', votes: 3 },
-  { id: 3, authorId: 2, title: 'Advanced GraphQL', votes: 1 },
-  { id: 4, authorId: 3, title: 'Launchpad is Cool', votes: 7 },
-];
+if (mockarooni && mockarooni !== 'false') {
+    addMockFunctionsToSchema({
+        schema: executableSchema,
+        mocks: mockarooni === 'basic' ? {} : mocks,
+        preserveResolvers: (mockarooni === 'mixed')
+    })
+}
+
+export default executableSchema;
