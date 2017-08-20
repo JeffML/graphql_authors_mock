@@ -5,25 +5,11 @@ import {
     makeExecutableSchema,
     addMockFunctionsToSchema
 } from 'graphql-tools';
-import {
-    merge
-} from 'lodash';
-import mocks from './mocks';
 
 import {
-    schema as protoSchema,
-    resolvers as protoResolvers
-} from './proto';
-
-import {
-    schema as domain1Schema,
-    resolvers as domain1Resolvers
-} from './domain1';
-
-/*
-import { schema as phpSchema, resolvers as phpResolvers } from './php/schema';
-import { schema as sqlSchema, resolvers as sqlResolvers } from './sql/schema';
-*/
+    schema as authorpostsSchema,
+    resolvers as authorpostsResolvers
+} from './authorposts';
 
 const baseSchema = [
     `
@@ -40,23 +26,13 @@ const baseSchema = [
 ]
 
 // Put schema together into one array of schema strings and one map of resolvers, like makeExecutableSchema expects
-const schema = [...baseSchema, ...protoSchema, ...domain1Schema /*, ...sqlSchema, ...phpSchema*/ ]
+const schema = [...baseSchema, ...authorpostsSchema]
 
 const options = {
     typeDefs: schema,
-    resolvers: merge(protoResolvers, domain1Resolvers /*, phpResolvers, sqlResolvers*/ )
+    resolvers: Object.assign({}, authorpostsResolvers)
 }
 
 const executableSchema = makeExecutableSchema(options);
-
-const mockarooni = process.env.MOCK
-
-if (mockarooni && mockarooni !== 'false') {
-    addMockFunctionsToSchema({
-        schema: executableSchema,
-        mocks: mockarooni === 'basic' ? {} : mocks,
-        preserveResolvers: (mockarooni === 'mixed')
-    })
-}
 
 export default executableSchema;

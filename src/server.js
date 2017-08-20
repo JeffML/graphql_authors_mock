@@ -9,7 +9,7 @@ import bodyParser from 'body-parser';
 import schema from './schema';
 
 
-const PORT = 3007;
+const PORT = 3000;
 const server = express();
 const graphiql = true;
 
