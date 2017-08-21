@@ -1,19 +1,8 @@
-const typeDefs = [
+import Author from './components/author'
+import Post from './components/post'
+
+const typeDefs =
     `
-  type Author {
-    id: Int!
-    firstName: String
-    lastName: String
-    posts: [Post] # the list of Posts by this author
-  }
-
-  type Post {
-    id: Int!
-    title: String
-    author: Author
-    votes: Int
-  }
-
   # the schema allows the following query:
   extend type Query {
     posts: [Post]
@@ -26,8 +15,6 @@ const typeDefs = [
       postId: Int!
     ): Post
   }
-`
-];
+`;
 
-
-export default typeDefs;
+export default [typeDefs, Author, Post];
