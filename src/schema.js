@@ -30,7 +30,8 @@ const schema = [...baseSchema, ...authorpostsSchema]
 
 const options = {
     typeDefs: schema,
-    resolvers: Object.assign({}, authorpostsResolvers)
+    resolvers: { ...authorpostsResolvers
+    }
 }
 
 const executableSchema = makeExecutableSchema(options);
