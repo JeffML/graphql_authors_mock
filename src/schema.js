@@ -11,6 +11,15 @@ import {
     resolvers as authorpostsResolvers
 } from './authorposts';
 
+import {
+    schema as myLittleTypoSchema,
+    resolvers as myLittleTypeResolvers
+} from './myLittleDomain';
+
+import {
+    merge
+} from 'lodash';
+
 const baseSchema = [
     `
     type Query {
@@ -26,12 +35,11 @@ const baseSchema = [
 ]
 
 // Put schema together into one array of schema strings and one map of resolvers, like makeExecutableSchema expects
-const schema = [...baseSchema, ...authorpostsSchema]
+const schema = [...baseSchema, ...authorpostsSchema, ...myLittleTypoSchema]
 
 const options = {
     typeDefs: schema,
-    resolvers: { ...authorpostsResolvers
-    }
+    resolvers: merge(...authorpostsResolvers, ...myLittleTypeResolvers)
 }
 
 const executableSchema = makeExecutableSchema(options);
