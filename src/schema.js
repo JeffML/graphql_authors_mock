@@ -39,7 +39,7 @@ const schema = [...baseSchema, ...authorpostsSchema, ...myLittleTypoSchema]
 
 const options = {
     typeDefs: schema,
-    resolvers: merge(...authorpostsResolvers, ...myLittleTypeResolvers)
+    resolvers: merge(authorpostsResolvers, myLittleTypeResolvers)
 }
 
 const executableSchema = makeExecutableSchema(options);
