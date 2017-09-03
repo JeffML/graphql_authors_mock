@@ -44,4 +44,8 @@ const options = {
 
 const executableSchema = makeExecutableSchema(options);
 
+addMockFunctionsToSchema({
+    schema: executableSchema
+})
+
 export default executableSchema;
