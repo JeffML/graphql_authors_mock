@@ -20,10 +20,12 @@
   },
   "dependencies": {
     "body-parser": "^1.17.1",
+    "casual": "^1.5.17",
     "express": "^4.15.2",
     "graphql": "^0.9.6",
     "graphql-server-express": "^0.6.0",
     "graphql-tools": "^0.11.0",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "randexp": "^0.4.6"
   }
 }

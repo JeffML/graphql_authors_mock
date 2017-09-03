@@ -1,5 +1,6 @@
 import Author from './components/author'
 import Post from './components/post'
+import Book from './components/book'
 
 const typeDefs =
     `
@@ -17,4 +18,4 @@ const typeDefs =
   }
 `;
 
-export default [typeDefs, Author, Post];
+export default [typeDefs, Author, Post, Book];

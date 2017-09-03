@@ -20,6 +20,8 @@ import {
     merge
 } from 'lodash';
 
+import mocks from './mocks'
+
 const baseSchema = [
     `
     type Query {
@@ -45,7 +47,8 @@ const options = {
 const executableSchema = makeExecutableSchema(options);
 
 addMockFunctionsToSchema({
-    schema: executableSchema
+    schema: executableSchema,
+    mocks: mocks,
 })
 
 export default executableSchema;
